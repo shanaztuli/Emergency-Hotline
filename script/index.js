@@ -1,3 +1,4 @@
+//functions
 function getId(id) {
   const element = document.getElementById(id);
   return element;
@@ -6,7 +7,7 @@ function getClassName(className) {
   const elements = document.getElementsByClassName(className);
   return elements;
 }
-// **********
+// cardHeart section
 const cardHeart = getClassName("card-heart");
 for (let heart of cardHeart) {
   heart.addEventListener("click", function () {
@@ -15,25 +16,23 @@ for (let heart of cardHeart) {
     getId("count-heart").innerText = countHeartTotal;
   });
 }
-//
+
+// cards section
 getId("cards-parent").addEventListener("click", function (e) {
-  if (e.target.className.includes("btn-call")) {
-    const cardCallButton = e.target;
-    const serviceName =
-      cardCallButton.parentNode.parentNode.children[1].innerText;
-    const callNumber =
-      cardCallButton.parentNode.parentNode.children[3].innerText;
+  const cardCallButton = e.target.closest(".btn-call");
+  if (cardCallButton) {
+    const card = cardCallButton.closest(".shadow");
+    const serviceName = card.querySelector(".card-title").innerText;
+    const callNumber = card.querySelector(".call-number").innerText;
     const date = new Date().toLocaleTimeString();
-    const coins = getId("coin").innerText;
+    const coins = Number(getId("coin").innerText);
     if (coins < 20) {
-      alert("Your Balance is Low,You can not make a call.");
+      alert(" ❌Your Balance is Low,You can not make a call.");
       return;
     }
-    alert(
-      "you called the " + serviceName + ".The Calling Number is " + callNumber
-    );
+    alert(" 📞Calling " + serviceName + " " + callNumber);
 
-    const chargeCoins = Number(coins) - 20;
+    const chargeCoins = coins - 20;
     getId("coin").innerText = chargeCoins;
 
     //
@@ -52,5 +51,24 @@ getId("cards-parent").addEventListener("click", function (e) {
     callHistoryCards.append(newCard);
   }
 });
+//clear section
+getId("btn-clear").addEventListener("click", function () {
+  const callHistoryCards = getId("call-history-cards");
+  callHistoryCards.innerHTML = "";
+});
 
-getId('"btn-clear"');
+// //copy section
+const btnCopy = getClassName("btn-copy");
+for (let copy of btnCopy) {
+  copy.addEventListener("click", function () {
+    const card = copy.closest(".shadow");
+    const callNumber = card.querySelector(".call-number").innerText;
+
+    navigator.clipboard.writeText(callNumber);
+    alert("You copied the service number: " + callNumber);
+
+    const countCopy = getId("count-copy").innerText;
+    const countCopyTotal = Number(countCopy) + 1;
+    getId("count-copy").innerText = countCopyTotal;
+  });
+}
